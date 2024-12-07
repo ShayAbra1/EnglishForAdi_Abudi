@@ -5,11 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>משחק למידת מילים באנגלית</title>
     <style>
-        /* Your CSS styles here */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-        }
         .card {
             max-width: 500px;
             margin: auto;
@@ -17,31 +12,80 @@
             border: 1px solid #ddd;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
         }
-        .button {
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-            border: none;
+        .card-header {
+            text-align: center;
+        }
+        .card-content {
+            padding: 20px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-xl {
+            font-size: 1.25rem;
+        }
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+        .mt-4 {
+            margin-top: 1rem;
+        }
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+        .flex {
+            display: flex;
+        }
+        .justify-center {
+            justify-content: center;
+        }
+        .items-center {
+            align-items: center;
+        }
+        .space-x-2 {
+            gap: 0.5rem;
+        }
+        .w-32 {
+            width: 8rem;
+        }
+        .h-32 {
+            height: 8rem;
+        }
+        .bg-gray-200 {
+            background-color: #eee;
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        .rounded-lg {
             border-radius: 0.5rem;
-            background-color: #4CAF50;
-            color: #fff;
-            cursor: pointer;
         }
-        .button:hover {
-            background-color: #3e8e41;
+        .object-cover {
+            object-fit: cover;
         }
-        .correct-feedback {
-            color: green;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-top: 1rem;
+        .p-2 {
+            padding: 0.5rem;
         }
-        .incorrect-feedback {
-            color: red;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-top: 1rem;
+        .border {
+            border: 1px solid #ccc;
+        }
+        .rounded {
+            border-radius: 0.25rem;
+        }
+        .bg-gray-100 {
+            background-color: #f7f7f7;
         }
     </style>
 </head>
@@ -53,7 +97,7 @@
         <div class="card-content">
             <div class="text-center mb-4">
                 <h2 class="text-xl mb-4">ברוכים הבאים למשחק למידת מילים באנגלית!</h2>
-                <button class="button" onclick="startGame()">התחל משחק</button>
+                <button class="mx-auto p-2 border rounded" onclick="startGame()">התחל משחק</button>
                 <p class="mt-4 text-sm text-gray-600">
                     במשחק זה תלמד מילים באנגלית מארבע קטגוריות שונות
                 </p>
@@ -70,15 +114,18 @@
                 <div class="flex flex-col space-y-2">
                     <input type="text" id="user-guess" placeholder="הקלד את המילה באנגלית" class="w-full p-2 border rounded">
                     <div class="flex space-x-2">
-                        <button class="button" onclick="checkGuess()">בדוק תשובה</button>
-                        <button id="translation-button" class="button" onclick="toggleTranslation()">הראה תרגום</button>
+                        <button class="flex-1 p-2 border rounded" onclick="checkGuess()">בדוק תשובה</button>
+                        <button 
+                            class="flex-1 p-2 border rounded" 
+                            onclick="toggleTranslation()"
+                        >
+                            {showTranslation ? 'הסתר תרגום' : 'הראה תרגום'}
+                        </button>
                     </div>
 
                     <div id="translation" style="display:none;" class="text-center mt-2 p-2 bg-gray-100 rounded">
                         <p>המילה היא: <span id="current-word"></span></p>
                     </div>
-
-                    <div id="feedback" class="text-center"></div>
 
                     <div class="mt-4 text-center">
                         <p id="score">ניקוד: <span id="score-value">0</span> / <span id="attempts-value">0</span></p>
@@ -99,7 +146,29 @@
                     'milk', 'fish', 'tomato', 'vegetables', 'meat'
                 ]
             },
-            // Add more categories here
+            {
+                category: 'גוף ורגשות',
+                words: [
+                    'teeth', 'nose', 'mouth', 'happy', 'disappointed', 
+                    'hungry', 'thirsty', 'long', 'short'
+                ]
+            },
+            {
+                category: 'זמנים וימים',
+                words: [
+                    'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 
+                    'Friday', 'Saturday', 'seven', 'o\'clock', 'time', 
+                    'dinner', 'birthday', 'eleven', 'thirteen'
+                ]
+            },
+            {
+                category: 'שפה ותקשורת',
+                words: [
+                    'you', 'their', 'they', 'what', 'want', 
+                    'with', 'don\'t like', 'can', 'I am', 'girl', 
+                    'Mom', 'share', 'shop'
+                ]
+            }
         ];
 
         let score = 0;
@@ -108,17 +177,8 @@
         let showTranslation = false;
 
         function startGame() {
-            console.log("Game started");
             document.getElementById('game-content').style.display = 'block';
             selectRandomWord();
-            resetScore();
-        }
-
-        function resetScore() {
-            score = 0;
-            attempts = 0;
-            document.getElementById('score-value').innerText = score;
-            document.getElementById('attempts-value').innerText = attempts;
         }
 
         function selectRandomWord() {
@@ -139,12 +199,12 @@
                         document.getElementById('word-image').src = randomImage.webformatURL;
                         document.getElementById('word-image').alt = word;
                     } else {
-                        document.getElementById('word-image').src = `https://via.placeholder.com/200x200?text=${word}`;
+                        document.getElementById('word-image').src = `/api/placeholder/200/200?text=${word}`;
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching image:', error);
-                    document.getElementById('word-image').src = `https://via.placeholder.com/200x200?text=${word}`;
+                    document.getElementById('word-image').src = `/api/placeholder/200/200?text=${word}`;
                 });
         }
 
@@ -156,41 +216,25 @@
             if (userGuess === currentWord) {
                 score++;
                 document.getElementById('score-value').innerText = score;
-                showCorrectFeedback();
+                alert('נכון!');
             } else {
-                showIncorrectFeedback();
+                alert(`לא נכון. המילה היא ${currentWord}`);
             }
 
             document.getElementById('user-guess').value = '';
             selectRandomWord();
         }
 
-        function showCorrectFeedback() {
-            const feedbackDiv = document.getElementById('feedback');
-            feedbackDiv.innerHTML = `<p class="correct-feedback">נכון! תוצאתך עלתה!</p>`;
-            playCorrectSound();
-            setTimeout(() => {
-                feedbackDiv.innerHTML = '';
-            }, 2000);
-        }
-
-        function showIncorrectFeedback() {
-            const feedbackDiv = document.getElementById('feedback');
-            feedbackDiv.innerHTML = `<p class="incorrect-feedback">לא נכון. המילה היא ${currentWord}</p>`;
-            playIncorrectSound();
-            setTimeout(() => {
-                feedbackDiv.innerHTML = '';
-            }, 2000);
-        }
-
         function toggleTranslation() {
             const translation = document.getElementById('translation');
-            const translationButton = document.getElementById('translation-button');
             if (translation.style.display === 'none') {
                 translation.style.display = 'block';
-                translationButton.innerText = 'הסתר תרגום';
                 showTranslation = true;
             } else {
                 translation.style.display = 'none';
-                translationButton.innerText = 'הראה תרגום';
                 showTranslation = false;
+            }
+        }
+    </script>
+</body>
+</html>
