@@ -7,84 +7,138 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
-    }
-    .game-container {
-      max-width: 400px;
-      margin: 0 auto;
-      border: 1px solid #ccc;
+      margin: 0;
       padding: 20px;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      background: white;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .title {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 20px;
     }
     .image-container {
+      text-align: center;
       margin: 20px 0;
     }
-    img {
-      width: 100%;
-      max-width: 300px;
-      height: auto;
+    .image-container img {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
       border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      border: 1px solid #ddd;
     }
-    button {
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .controls input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .controls button {
+      padding: 10px;
       border: none;
-      border-radius: 5px;
+      border-radius: 4px;
+      background: #007bff;
+      color: white;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #0056b3;
+    .controls button:hover {
+      background: #0056b3;
+    }
+    .score {
+      text-align: center;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="game-container">
-    <h1>English Word Learning Game</h1>
-    <p id="category">Category: Food & Drinks</p>
-    <div class="image-container">
-      <img id="wordImage" src="" alt="Word Image">
+  <div class="container">
+    <div class="title">משחק למידת מילים באנגלית</div>
+    <div id="game" class="game">
+      <div id="welcome">
+        <p>ברוכים הבאים למשחק למידת מילים באנגלית!</p>
+        <button onclick="startGame()">התחל משחק</button>
+      </div>
+      <div id="gameArea" style="display: none;">
+        <p>קטגוריה: <span id="categoryName"></span></p>
+        <div class="image-container">
+          <img id="wordImage" src="" alt="Word Image">
+        </div>
+        <div class="controls">
+          <input type="text" id="userGuess" placeholder="הקלד את המילה באנגלית">
+          <button onclick="checkGuess()">בדוק תשובה</button>
+          <button onclick="showTranslation()">הראה תרגום</button>
+        </div>
+        <p id="translation" style="display: none;">המילה היא: <span id="currentWord"></span></p>
+        <div class="score">
+          <p>ניקוד: <span id="score">0</span> / <span id="attempts">0</span></p>
+        </div>
+      </div>
     </div>
-    <input type="text" id="guessInput" placeholder="Type your guess here">
-    <div>
-      <button onclick="checkGuess()">Check Guess</button>
-      <button onclick="nextWord()">Next Word</button>
-    </div>
-    <p id="score">Score: 0</p>
   </div>
 
   <script>
     const wordCategories = [
       {
-        category: 'Food & Drinks',
+        category: 'אוכל ושתייה',
         words: [
-          { word: 'sandwich', image: 'https://pixabay.com/vectors/sandwich-snack-food-bread-healthy-311262/' },
-          { word: 'chocolate', image: 'https://pixabay.com/vectors/bar-chocolate-food-snack-1299829/' },
-          { word: 'salad', image: 'https://pixabay.com/vectors/sandwich-snack-food-bread-healthy-311262/' },
-          { word: 'juice', image: 'https://pixabay.com/vectors/sandwich-snack-food-bread-healthy-311262/' },
-          { word: 'pizza', image: 'https://pixabay.com/vectors/sandwich-snack-food-bread-healthy-311262/' }
+          { word: 'sandwich', image: 'https://via.placeholder.com/200?text=sandwich' },
+          { word: 'chocolate', image: 'https://via.placeholder.com/200?text=chocolate' },
+          { word: 'salad', image: 'https://via.placeholder.com/200?text=salad' },
+          { word: 'drink', image: 'https://via.placeholder.com/200?text=drink' },
+          { word: 'juice', image: 'https://via.placeholder.com/200?text=juice' },
+          { word: 'tea', image: 'https://via.placeholder.com/200?text=tea' },
+          { word: 'coffee', image: 'https://via.placeholder.com/200?text=coffee' },
+          { word: 'chicken', image: 'https://via.placeholder.com/200?text=chicken' },
+          { word: 'chips', image: 'https://via.placeholder.com/200?text=chips' },
+          { word: 'pizza', image: 'https://via.placeholder.com/200?text=pizza' }
         ]
       },
       {
-        category: 'Body & Emotions',
+        category: 'גוף ורגשות',
         words: [
-          { word: 'teeth', image: 'https://pixabay.com/vectors/sandwich-snack-food-bread-healthy-311262/' },
-          { word: 'nose', image: 'https://pixabay.com/vectors/sandwich-snack-food-bread-healthy-311262/' },
-          { word: 'mouth', image: 'https://pixabay.com/vectors/sandwich-snack-food-bread-healthy-311262/' },
-          { word: 'happy', image: 'https://pixabay.com/vectors/sandwich-snack-food-bread-healthy-311262/' },
-          { word: 'hungry', image: 'https://pixabay.com/vectors/sandwich-snack-food-bread-healthy-311262/' }
+          { word: 'teeth', image: 'https://via.placeholder.com/200?text=teeth' },
+          { word: 'nose', image: 'https://via.placeholder.com/200?text=nose' },
+          { word: 'mouth', image: 'https://via.placeholder.com/200?text=mouth' },
+          { word: 'happy', image: '/mnt/data/A_bright_and_cheerful_illustration_of_a_smiling_fa.png' }, // Custom image for "happy"
+          { word: 'disappointed', image: 'https://via.placeholder.com/200?text=disappointed' },
+          { word: 'hungry', image: 'https://via.placeholder.com/200?text=hungry' },
+          { word: 'thirsty', image: 'https://via.placeholder.com/200?text=thirsty' }
         ]
       },
       {
-        category: 'Days & Times',
+        category: 'זמנים וימים',
         words: [
-          { word: 'Monday', image: 'https://pixabay.com/vectors/sandwich-snack-food-bread-healthy-311262/' },
-          { word: 'Friday', image: 'https://pixabay.com/vectors/sandwich-snack-food-bread-healthy-311262/' },
-          { word: 'time', image: 'https://pixabay.com/vectors/sandwich-snack-food-bread-healthy-311262/' },
-          { word: 'dinner', image: 'https://pixabay.com/vectors/sandwich-snack-food-bread-healthy-311262/' },
-          { word: 'birthday', image: 'https://pixabay.com/vectors/sandwich-snack-food-bread-healthy-311262/' }
+          { word: 'Sunday', image: 'https://via.placeholder.com/200?text=Sunday' },
+          { word: 'Monday', image: 'https://via.placeholder.com/200?text=Monday' },
+          { word: 'Tuesday', image: 'https://via.placeholder.com/200?text=Tuesday' },
+          { word: 'time', image: 'https://via.placeholder.com/200?text=time' },
+          { word: 'dinner', image: 'https://via.placeholder.com/200?text=dinner' },
+          { word: 'birthday', image: 'https://via.placeholder.com/200?text=birthday' }
+        ]
+      },
+      {
+        category: 'שפה ותקשורת',
+        words: [
+          { word: 'you', image: 'https://via.placeholder.com/200?text=you' },
+          { word: 'their', image: 'https://via.placeholder.com/200?text=their' },
+          { word: 'they', image: 'https://via.placeholder.com/200?text=they' },
+          { word: 'what', image: 'https://via.placeholder.com/200?text=what' },
+          { word: 'can', image: 'https://via.placeholder.com/200?text=can' },
+          { word: 'Mom', image: 'https://via.placeholder.com/200?text=Mom' },
+          { word: 'share', image: 'https://via.placeholder.com/200?text=share' }
         ]
       }
     ];
@@ -92,34 +146,43 @@
     let currentCategory = null;
     let currentWord = null;
     let score = 0;
+    let attempts = 0;
 
-    function selectRandomWord() {
-      const randomCategory = wordCategories[Math.floor(Math.random() * wordCategories.length)];
-      const randomWord = randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
-      currentCategory = randomCategory.category;
-      currentWord = randomWord;
-      document.getElementById('category').textContent = `Category: ${currentCategory}`;
-      document.getElementById('wordImage').src = randomWord.image;
-    }
-
-    function checkGuess() {
-      const userGuess = document.getElementById('guessInput').value.trim().toLowerCase();
-      if (userGuess === currentWord.word.toLowerCase()) {
-        alert('Correct!');
-        score++;
-        document.getElementById('score').textContent = `Score: ${score}`;
-      } else {
-        alert(`Incorrect! The word was: ${currentWord.word}`);
-      }
-      document.getElementById('guessInput').value = '';
-    }
-
-    function nextWord() {
+    function startGame() {
+      document.getElementById('welcome').style.display = 'none';
+      document.getElementById('gameArea').style.display = 'block';
       selectRandomWord();
     }
 
-    // Start the game
-    selectRandomWord();
+    function selectRandomWord() {
+      const randomCategory = wordCategories[Math.floor(Math.random() * wordCategories.length)];
+      const randomWordObject = randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
+      currentCategory = randomCategory;
+      currentWord = randomWordObject.word;
+
+      document.getElementById('categoryName').innerText = currentCategory.category;
+      document.getElementById('currentWord').innerText = currentWord;
+      document.getElementById('translation').style.display = 'none';
+
+      // Set the image based on the word
+      document.getElementById('wordImage').src = randomWordObject.image;
+    }
+
+    function checkGuess() {
+      const userGuess = document.getElementById('userGuess').value.trim().toLowerCase();
+      attempts++;
+      if (userGuess === currentWord.toLowerCase()) {
+        score++;
+      }
+      document.getElementById('score').innerText = score;
+      document.getElementById('attempts').innerText = attempts;
+      document.getElementById('userGuess').value = '';
+      selectRandomWord();
+    }
+
+    function showTranslation() {
+      document.getElementById('translation').style.display = 'block';
+    }
   </script>
 </body>
 </html>
