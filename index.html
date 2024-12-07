@@ -1,154 +1,223 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>English Word Learning Game</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background-color: #f4f4f9;
-      color: #333;
-    }
-    .container {
-      max-width: 500px;
-      margin: 0 auto;
-      padding: 20px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .title {
-      text-align: center;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    .image-container {
-      text-align: center;
-      margin: 20px 0;
-    }
-    .image-container img {
-      width: 200px;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-    }
-    .controls {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .controls input {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .controls button {
-      padding: 10px;
-      border: none;
-      border-radius: 4px;
-      background: #007bff;
-      color: white;
-      cursor: pointer;
-    }
-    .controls button:hover {
-      background: #0056b3;
-    }
-    .score {
-      text-align: center;
-      margin-top: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>משחק למידת מילים באנגלית</title>
+    <style>
+        .card {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            text-align: center;
+        }
+        .card-content {
+            padding: 20px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-xl {
+            font-size: 1.25rem;
+        }
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+        .mt-4 {
+            margin-top: 1rem;
+        }
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+        .flex {
+            display: flex;
+        }
+        .justify-center {
+            justify-content: center;
+        }
+        .items-center {
+            align-items: center;
+        }
+        .space-x-2 {
+            gap: 0.5rem;
+        }
+        .w-32 {
+            width: 8rem;
+        }
+        .h-32 {
+            height: 8rem;
+        }
+        .bg-gray-200 {
+            background-color: #eee;
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+        .object-cover {
+            object-fit: cover;
+        }
+        .p-2 {
+            padding: 0.5rem;
+        }
+        .border {
+            border: 1px solid #ccc;
+        }
+        .rounded {
+            border-radius: 0.25rem;
+        }
+        .bg-gray-100 {
+            background-color: #f7f7f7;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="title">משחק למידת מילים באנגלית</div>
-    <div id="game" class="game">
-      <div id="welcome">
-        <p>ברוכים הבאים למשחק למידת מילים באנגלית!</p>
-        <button onclick="startGame()">התחל משחק</button>
-      </div>
-      <div id="gameArea" style="display: none;">
-        <p>קטגוריה: <span id="categoryName"></span></p>
-        <div class="image-container">
-          <img id="wordImage" src="" alt="Word Image">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-center text-xl mb-4">משחק למידת מילים באנגלית</h2>
         </div>
-        <div class="controls">
-          <input type="text" id="userGuess" placeholder="הקלד את המילה באנגלית">
-          <button onclick="checkGuess()">בדוק תשובה</button>
-          <button onclick="showTranslation()">הראה תרגום</button>
+        <div class="card-content">
+            <div class="text-center mb-4">
+                <h2 class="text-xl mb-4">ברוכים הבאים למשחק למידת מילים באנגלית!</h2>
+                <button class="mx-auto p-2 border rounded" onclick="startGame()">התחל משחק</button>
+                <p class="mt-4 text-sm text-gray-600">
+                    במשחק זה תלמד מילים באנגלית מארבע קטגוריות שונות
+                </p>
+            </div>
+            <div id="game-content" style="display:none;">
+                <div class="text-center mb-4">
+                    <p id="category">קטגוריה: אוכל ושתייה</p>
+                    <h3 class="text-2xl font-bold">נסה לכתוב את המילה הבאה:</h3>
+                    <div class="flex justify-center items-center space-x-2 mt-2">
+                        <img id="word-image" src="" alt="" class="w-32 h-32 object-cover rounded-lg">
+                    </div>
+                </div>
+
+                <div class="flex flex-col space-y-2">
+                    <input type="text" id="user-guess" placeholder="הקלד את המילה באנגלית" class="w-full p-2 border rounded">
+                    <div class="flex space-x-2">
+                        <button class="flex-1 p-2 border rounded" onclick="checkGuess()">בדוק תשובה</button>
+                        <button class="flex-1 p-2 border rounded" onclick="toggleTranslation()">הראה תרגום</button>
+                    </div>
+
+                    <div id="translation" style="display:none;" class="text-center mt-2 p-2 bg-gray-100 rounded">
+                        <p>המילה היא: sandwich</p>
+                    </div>
+
+                    <div class="mt-4 text-center">
+                        <p id="score">ניקוד: 0 / 0</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <p id="translation" style="display: none;">המילה היא: <span id="currentWord"></span></p>
-        <div class="score">
-          <p>ניקוד: <span id="score">0</span> / <span id="attempts">0</span></p>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <script>
-    const wordCategories = [
-      {
-        category: 'אוכל ושתייה',
-        words: ['sandwich', 'chocolate', 'salad', 'drink', 'juice', 'tea', 'coffee', 'chicken', 'chips', 'pizza']
-      },
-      {
-        category: 'גוף ורגשות',
-        words: ['teeth', 'nose', 'mouth', 'happy', 'disappointed', 'hungry', 'thirsty']
-      },
-      {
-        category: 'זמנים וימים',
-        words: ['Sunday', 'Monday', 'Tuesday', 'time', 'dinner', 'birthday']
-      },
-      {
-        category: 'שפה ותקשורת',
-        words: ['you', 'their', 'they', 'what', 'can', 'Mom', 'share']
-      }
-    ];
+    <script>
+        const API_KEY = 'YOUR_API_KEY'; //47511993-201ac7b93df24bab71fa5b216
+        const wordCategories = [
+            {
+                category: 'אוכל ושתייה',
+                words: [
+                    'sandwich', 'chocolate', 'salad', 'drink', 'juice', 
+                    'tea', 'coffee', 'chicken', 'chips', 'pizza', 
+                    'milk', 'fish', 'tomato', 'vegetables', 'meat'
+                ]
+            },
+            {
+                category: 'גוף ורגשות',
+                words: [
+                    'teeth', 'nose', 'mouth', 'happy', 'disappointed', 
+                    'hungry', 'thirsty', 'long', 'short'
+                ]
+            },
+            {
+                category: 'זמנים וימים',
+                words: [
+                    'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 
+                    'Friday', 'Saturday', 'seven', 'o\'clock', 'time', 
+                    'dinner', 'birthday', 'eleven', 'thirteen'
+                ]
+            },
+            {
+                category: 'שפה ותקשורת',
+                words: [
+                    'you', 'their', 'they', 'what', 'want', 
+                    'with', 'don\'t like', 'can', 'I am', 'girl', 
+                    'Mom', 'share', 'shop'
+                ]
+            }
+        ];
 
-    let currentCategory = null;
-    let currentWord = null;
-    let score = 0;
-    let attempts = 0;
+        function startGame() {
+            document.getElementById('game-content').style.display = 'block';
+            selectRandomWord();
+        }
 
-    function startGame() {
-      document.getElementById('welcome').style.display = 'none';
-      document.getElementById('gameArea').style.display = 'block';
-      selectRandomWord();
-    }
+        function selectRandomWord() {
+            const randomCategory = wordCategories[Math.floor(Math.random() * wordCategories.length)];
+            const randomWord = randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
+            document.getElementById('category').innerText = `קטגוריה: ${randomCategory.category}`;
+            fetchWordImage(randomWord);
+        }
 
-    function selectRandomWord() {
-      const randomCategory = wordCategories[Math.floor(Math.random() * wordCategories.length)];
-      const randomWord = randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
-      currentCategory = randomCategory;
-      currentWord = randomWord;
+        function fetchWordImage(word) {
+            const url = `https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(word)}&image_type=photo&safesearch=true`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.hits && data.hits.length > 0) {
+                        const randomImage = data.hits[Math.floor(Math.random() * data.hits.length)];
+                        document.getElementById('word-image').src = randomImage.webformatURL;
+                        document.getElementById('word-image').alt = word;
+                    } else {
+                        document.getElementById('word-image').src = `/api/placeholder/200/200?text=${word}`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching image:', error);
+                    document.getElementById('word-image').src = `/api/placeholder/200/200?text=${word}`;
+                });
+        }
 
-      document.getElementById('categoryName').innerText = currentCategory.category;
-      document.getElementById('currentWord').innerText = currentWord;
-      document.getElementById('translation').style.display = 'none';
+        function checkGuess() {
+            const userGuess = document.getElementById('user-guess').value.trim().toLowerCase();
+            const currentWord = document.getElementById('word-image').alt;
+            if (userGuess === currentWord) {
+                alert('נכון!');
+                // Update score here if needed
+            } else {
+                alert('לא נכון. המילה היא ' + currentWord);
+            }
+            document.getElementById('user-guess').value = '';
+            selectRandomWord();
+        }
 
-      // Fetch a random image (placeholder logic used)
-      document.getElementById('wordImage').src = `https://via.placeholder.com/200?text=${currentWord}`;
-    }
-
-    function checkGuess() {
-      const userGuess = document.getElementById('userGuess').value.trim().toLowerCase();
-      attempts++;
-      if (userGuess === currentWord.toLowerCase()) {
-        score++;
-      }
-      document.getElementById('score').innerText = score;
-      document.getElementById('attempts').innerText = attempts;
-      document.getElementById('userGuess').value = '';
-      selectRandomWord();
-    }
-
-    function showTranslation() {
-      document.getElementById('translation').style.display = 'block';
-    }
-  </script>
+        function toggleTranslation() {
+            const translation = document.getElementById('translation');
+            if (translation.style.display === 'none') {
+                translation.style.display = 'block';
+            } else {
+                translation.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
