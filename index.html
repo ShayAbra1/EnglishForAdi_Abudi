@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>משחק למידת מילים באנגלית</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+        }
         .card {
             max-width: 500px;
             margin: auto;
@@ -12,6 +16,7 @@
             border: 1px solid #ddd;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
         }
         .card-header {
             text-align: center;
@@ -24,6 +29,8 @@
         }
         .text-xl {
             font-size: 1.25rem;
+            font-weight: bold;
+            color: #333;
         }
         .mb-4 {
             margin-bottom: 1rem;
@@ -87,6 +94,30 @@
         .bg-gray-100 {
             background-color: #f7f7f7;
         }
+        .button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 0.5rem;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #3e8e41;
+        }
+        .correct-feedback {
+            color: green;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+        .incorrect-feedback {
+            color: red;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -97,7 +128,7 @@
         <div class="card-content">
             <div class="text-center mb-4">
                 <h2 class="text-xl mb-4">ברוכים הבאים למשחק למידת מילים באנגלית!</h2>
-                <button class="mx-auto p-2 border rounded" onclick="startGame()">התחל משחק</button>
+                <button class="button" onclick="startGame()">התחל משחק</button>
                 <p class="mt-4 text-sm text-gray-600">
                     במשחק זה תלמד מילים באנגלית מארבע קטגוריות שונות
                 </p>
@@ -114,16 +145,23 @@
                 <div class="flex flex-col space-y-2">
                     <input type="text" id="user-guess" placeholder="הקלד את המילה באנגלית" class="w-full p-2 border rounded">
                     <div class="flex space-x-2">
-                        <button class="flex-1 p-2 border rounded" onclick="checkGuess()">בדוק תשובה</button>
-                        <button class="flex-1 p-2 border rounded" onclick="toggleTranslation()">הראה תרגום</button>
+                        <button class="button" onclick="checkGuess()">בדוק תשובה</button>
+                        <button 
+                            class="button" 
+                            onclick="toggleTranslation()"
+                        >
+                            {showTranslation ? 'הסתר תרגום' : 'הראה תרגום'}
+                        </button>
                     </div>
 
                     <div id="translation" style="display:none;" class="text-center mt-2 p-2 bg-gray-100 rounded">
-                        <p>המילה היא: sandwich</p>
+                        <p>המילה היא: <span id="current-word"></span></p>
                     </div>
 
+                    <div id="feedback" class="text-center"></div>
+
                     <div class="mt-4 text-center">
-                        <p id="score">ניקוד: 0 / 0</p>
+                        <p id="score">ניקוד: <span id="score-value">0</span> / <span id="attempts-value">0</span></p>
                     </div>
                 </div>
             </div>
@@ -131,7 +169,7 @@
     </div>
 
     <script>
-        const API_KEY = '47511993-201ac7b93df24bab71fa5b216'; 
+        const API_KEY = 'YOUR_API_KEY'; // Replace with your actual API key
         const wordCategories = [
             {
                 category: 'אוכל ושתייה',
@@ -166,6 +204,11 @@
             }
         ];
 
+        let score = 0;
+        let attempts = 0;
+        let currentWord = '';
+        let showTranslation = false;
+
         function startGame() {
             document.getElementById('game-content').style.display = 'block';
             selectRandomWord();
@@ -173,9 +216,10 @@
 
         function selectRandomWord() {
             const randomCategory = wordCategories[Math.floor(Math.random() * wordCategories.length)];
-            const randomWord = randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
+            currentWord = randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
             document.getElementById('category').innerText = `קטגוריה: ${randomCategory.category}`;
-            fetchWordImage(randomWord);
+            document.getElementById('current-word').innerText = currentWord;
+            fetchWordImage(currentWord);
         }
 
         function fetchWordImage(word) {
@@ -199,25 +243,29 @@
 
         function checkGuess() {
             const userGuess = document.getElementById('user-guess').value.trim().toLowerCase();
-            const currentWord = document.getElementById('word-image').alt;
+            attempts++;
+            document.getElementById('attempts-value').innerText = attempts;
+
             if (userGuess === currentWord) {
-                alert('נכון!');
-                // Update score here if needed
+                score++;
+                document.getElementById('score-value').innerText = score;
+                showCorrectFeedback();
             } else {
-                alert('לא נכון. המילה היא ' + currentWord);
+                showIncorrectFeedback();
             }
+
             document.getElementById('user-guess').value = '';
             selectRandomWord();
         }
 
-        function toggleTranslation() {
-            const translation = document.getElementById('translation');
-            if (translation.style.display === 'none') {
-                translation.style.display = 'block';
-            } else {
-                translation.style.display = 'none';
-            }
+        function showCorrectFeedback() {
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = `<p class="correct-feedback">נכון! תוצאתך עלתה!</p>`;
+            playCorrectSound();
+            setTimeout(() => {
+                feedbackDiv.innerHTML = '';
+            }, 2000);
         }
-    </script>
-</body>
-</html>
+
+        function showIncorrectFeedback() {
+            const feedback
