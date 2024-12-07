@@ -212,6 +212,14 @@
         function startGame() {
             document.getElementById('game-content').style.display = 'block';
             selectRandomWord();
+            resetScore();
+        }
+
+        function resetScore() {
+            score = 0;
+            attempts = 0;
+            document.getElementById('score-value').innerText = score;
+            document.getElementById('attempts-value').innerText = attempts;
         }
 
         function selectRandomWord() {
@@ -268,4 +276,19 @@
         }
 
         function showIncorrectFeedback() {
-            const feedback
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = `<p class="incorrect-feedback">לא נכון. המילה היא ${currentWord}</p>`;
+            playIncorrectSound();
+            setTimeout(() => {
+                feedbackDiv.innerHTML = '';
+            }, 2000);
+        }
+
+        function toggleTranslation() {
+            const translation = document.getElementById('translation');
+            if (translation.style.display === 'none') {
+                translation.style.display = 'block';
+                showTranslation = true;
+            } else {
+                translation.style.display = 'none';
+                showTranslation = false;
