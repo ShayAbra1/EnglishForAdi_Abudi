@@ -25,10 +25,12 @@
       height: 200px;
       display: inline-block;
       background: #eee;
-      line-height: 200px;
       border-radius: 8px;
+      line-height: 200px;
       font-size: 16px;
       color: #555;
+      text-align: center;
+      object-fit: cover;
     }
     button {
       padding: 10px 15px;
@@ -110,17 +112,19 @@
       document.getElementById('currentWord').innerText = currentWord;
       document.getElementById('translation').style.display = 'none';
 
-      // Load image (Pixabay API or placeholder for simplicity)
+      // Fetch an image from Pixabay API
       const apiKey = '47511993-201ac7b93df24bab71fa5b216';
-      const imageUrl = `https://pixabay.com/api/?key=${apiKey}&q=${currentWord}&image_type=photo&per_page=1`;
+      const imageUrl = `https://pixabay.com/api/?key=${apiKey}&q=${currentWord}&image_type=photo&per_page=1&lang=en`;
       fetch(imageUrl)
         .then(response => response.json())
         .then(data => {
           const imgElement = document.getElementById('wordImage');
           if (data.hits && data.hits.length > 0) {
             imgElement.src = data.hits[0].webformatURL;
+            imgElement.alt = currentWord;
           } else {
-            imgElement.src = `https://via.placeholder.com/200?text=${currentWord}`;
+            imgElement.src = 'https://via.placeholder.com/200?text=No+Image';
+            imgElement.alt = 'No image available';
           }
         });
     }
