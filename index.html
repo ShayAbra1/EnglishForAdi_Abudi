@@ -1,161 +1,105 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>משחק למידת מילים באנגלית</title>
+  <title>English Word Learning Game</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
-      margin: 0;
-      padding: 20px;
       text-align: center;
     }
-    .card {
+    .game-container {
       max-width: 400px;
-      margin: auto;
+      margin: 0 auto;
+      border: 1px solid #ccc;
       padding: 20px;
-      background: #fff;
       border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    .image-placeholder {
-      width: 200px;
-      height: 200px;
-      display: inline-block;
-      background: #eee;
-      border-radius: 8px;
-      line-height: 200px;
-      font-size: 16px;
-      color: #555;
-      text-align: center;
-      object-fit: cover;
+    .image-container {
+      margin: 20px 0;
+    }
+    iframe {
+      width: 100%;
+      height: 300px;
+      border: none;
     }
     button {
-      padding: 10px 15px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
       border: none;
       border-radius: 5px;
-      background: #007bff;
-      color: white;
-      font-size: 16px;
       cursor: pointer;
-      margin: 5px;
     }
-    button.secondary {
-      background: #6c757d;
-    }
-    input {
-      width: calc(100% - 20px);
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+    button:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>משחק למידת מילים באנגלית</h1>
-    <div id="welcomeScreen">
-      <p>ברוכים הבאים למשחק למידת מילים באנגלית!</p>
-      <button onclick="startGame()">התחל משחק</button>
+  <div class="game-container">
+    <h1>English Word Learning Game</h1>
+    <p id="category">Category: Food & Drinks</p>
+    <div class="image-container">
+      <iframe id="imageFrame" src=""></iframe>
     </div>
-    <div id="gameScreen" style="display: none;">
-      <p>קטגוריה: <span id="categoryName"></span></p>
-      <div>
-        <img id="wordImage" class="image-placeholder" src="" alt="Word Image">
-      </div>
-      <input type="text" id="userGuess" placeholder="הקלד את המילה באנגלית">
-      <button onclick="checkGuess()">בדוק תשובה</button>
-      <button class="secondary" onclick="toggleTranslation()">הראה תרגום</button>
-      <p id="translation" style="display: none;">המילה היא: <span id="currentWord"></span></p>
-      <p>ניקוד: <span id="score">0</span> / <span id="attempts">0</span></p>
+    <input type="text" id="guessInput" placeholder="Type your guess here">
+    <div>
+      <button onclick="checkGuess()">Check Guess</button>
+      <button onclick="nextWord()">Next Word</button>
     </div>
+    <p id="score">Score: 0</p>
   </div>
 
   <script>
     const wordCategories = [
       {
-        category: 'אוכל ושתייה',
-        words: ['sandwich', 'chocolate', 'salad', 'drink', 'juice']
+        category: 'Food & Drinks',
+        words: ['sandwich', 'chocolate', 'salad', 'juice', 'pizza']
       },
       {
-        category: 'גוף ורגשות',
+        category: 'Body & Emotions',
         words: ['teeth', 'nose', 'mouth', 'happy', 'hungry']
       },
       {
-        category: 'זמנים וימים',
-        words: ['Sunday', 'Monday', 'Tuesday', 'time', 'birthday']
-      },
-      {
-        category: 'שפה ותקשורת',
-        words: ['you', 'they', 'what', 'can', 'Mom']
+        category: 'Days & Times',
+        words: ['Monday', 'Friday', 'time', 'dinner', 'birthday']
       }
     ];
 
-    let currentCategory, currentWord, score = 0, attempts = 0;
-
-    function startGame() {
-      document.getElementById('welcomeScreen').style.display = 'none';
-      document.getElementById('gameScreen').style.display = 'block';
-      selectRandomWord();
-    }
+    let currentCategory = null;
+    let currentWord = null;
+    let score = 0;
 
     function selectRandomWord() {
       const randomCategory = wordCategories[Math.floor(Math.random() * wordCategories.length)];
       const randomWord = randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
       currentCategory = randomCategory.category;
       currentWord = randomWord;
-
-      document.getElementById('categoryName').innerText = currentCategory;
-      document.getElementById('currentWord').innerText = currentWord;
-      document.getElementById('translation').style.display = 'none';
-
-      // Fetch an image from Pixabay API
-      const apiKey = '47511993-201ac7b93df24bab71fa5b216'; // ודא שהמפתח תקין
-      const imageUrl = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(currentWord)}&image_type=photo&per_page=1&lang=en`;
-      fetch(imageUrl)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`Network response was not ok: ${response.statusText}`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          const imgElement = document.getElementById('wordImage');
-          if (data.hits && data.hits.length > 0) {
-            imgElement.src = data.hits[0].webformatURL;
-            imgElement.alt = currentWord;
-          } else {
-            imgElement.src = 'https://via.placeholder.com/200?text=No+Image';
-            imgElement.alt = 'No image available';
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching image:', error);
-          const imgElement = document.getElementById('wordImage');
-          imgElement.src = 'https://via.placeholder.com/200?text=Error';
-          imgElement.alt = 'Error loading image';
-        });
+      document.getElementById('category').textContent = `Category: ${currentCategory}`;
+      document.getElementById('imageFrame').src = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(currentWord)}`;
     }
 
     function checkGuess() {
-      const userGuess = document.getElementById('userGuess').value.trim().toLowerCase();
-      attempts++;
+      const userGuess = document.getElementById('guessInput').value.trim().toLowerCase();
       if (userGuess === currentWord.toLowerCase()) {
+        alert('Correct!');
         score++;
+        document.getElementById('score').textContent = `Score: ${score}`;
+      } else {
+        alert(`Incorrect! The word was: ${currentWord}`);
       }
-      document.getElementById('score').innerText = score;
-      document.getElementById('attempts').innerText = attempts;
-      document.getElementById('userGuess').value = '';
+      document.getElementById('guessInput').value = '';
+    }
+
+    function nextWord() {
       selectRandomWord();
     }
 
-    function toggleTranslation() {
-      const translationElement = document.getElementById('translation');
-      translationElement.style.display = translationElement.style.display === 'none' ? 'block' : 'none';
-    }
+    // Start the game
+    selectRandomWord();
   </script>
 </body>
 </html>
