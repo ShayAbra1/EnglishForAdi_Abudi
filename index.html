@@ -5,166 +5,154 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>משחק למידת מילים באנגלית</title>
     <style>
+        body {
+            background-color: #f4f8fc;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            color: #333;
+        }
+
         .card {
-            max-width: 500px;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 30px;
+            border-radius: 12px;
+            background-color: #fff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
-        .card-header {
+
+        .card-header h2 {
+            font-size: 2rem;
             text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
         }
+
         .card-content {
-            padding: 20px;
-        }
-        .text-center {
             text-align: center;
         }
-        .text-xl {
-            font-size: 1.25rem;
+
+        .btn {
+            padding: 15px;
+            font-size: 1.2rem;
+            background-color: #FF7F50;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 60%;
+            margin: 10px auto;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         }
-        .mb-4 {
-            margin-bottom: 1rem;
+
+        .btn:hover {
+            background-color: #ff6347;
         }
-        .mt-4 {
-            margin-top: 1rem;
+
+        .btn-secondary {
+            background-color: #87CEEB;
         }
-        .mt-2 {
-            margin-top: 0.5rem;
+
+        .btn-secondary:hover {
+            background-color: #4682b4;
         }
-        .mb-2 {
-            margin-bottom: 0.5rem;
+
+        .img-container {
+            margin-top: 20px;
         }
-        .flex {
-            display: flex;
-        }
-        .justify-center {
-            justify-content: center;
-        }
-        .items-center {
-            align-items: center;
-        }
-        .space-x-2 {
-            gap: 0.5rem;
-        }
-        .w-32 {
-            width: 8rem;
-        }
-        .h-32 {
-            height: 8rem;
-        }
-        .bg-gray-200 {
-            background-color: #eee;
-        }
-        .animate-pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-        .rounded-lg {
-            border-radius: 0.5rem;
-        }
-        .object-cover {
+
+        .img-container img {
+            width: 150px;
+            height: 150px;
+            border-radius: 12px;
             object-fit: cover;
+            border: 3px solid #FF7F50;
         }
-        .p-2 {
-            padding: 0.5rem;
+
+        .input-field {
+            width: 70%;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            text-align: center;
         }
-        .border {
-            border: 1px solid #ccc;
+
+        .translation {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #FFFACD;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            display: none;
         }
-        .rounded {
-            border-radius: 0.25rem;
-        }
-        .bg-gray-100 {
-            background-color: #f7f7f7;
+
+        .score {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4CAF50;
         }
     </style>
 </head>
 <body>
+
     <div class="card">
         <div class="card-header">
-            <h2 class="text-center text-xl mb-4">משחק למידת מילים באנגלית</h2>
+            <h2>משחק למידת מילים באנגלית</h2>
         </div>
         <div class="card-content">
-            <div class="text-center mb-4">
-                <h2 class="text-xl mb-4">ברוכים הבאים למשחק למידת מילים באנגלית!</h2>
-                <button class="mx-auto p-2 border rounded" onclick="startGame()">התחל משחק</button>
-                <p class="mt-4 text-sm text-gray-600">
-                    במשחק זה תלמד מילים באנגלית מארבע קטגוריות שונות
-                </p>
-            </div>
+            <h3>ברוכים הבאים למשחק למידת מילים באנגלית!</h3>
+            <p>המשחק הזה ילמד אותך מילים באנגלית בצורה מהנה ומאתגרת!</p>
+            <button class="btn" onclick="startGame()">התחל משחק</button>
+
             <div id="game-content" style="display:none;">
-                <div class="text-center mb-4">
-                    <p id="category">קטגוריה: אוכל ושתייה</p>
-                    <h3 class="text-2xl font-bold">נסה לכתוב את המילה הבאה:</h3>
-                    <div class="flex justify-center items-center space-x-2 mt-2">
-                        <img id="word-image" src="" alt="" class="w-32 h-32 object-cover rounded-lg">
-                    </div>
+                <p id="category" class="text-xl"></p>
+                <h3 class="text-2xl font-bold">נסה לנחש את המילה!</h3>
+
+                <div class="img-container">
+                    <img id="word-image" src="" alt="תמונה" />
                 </div>
 
-                <div class="flex flex-col space-y-2">
-                    <input type="text" id="user-guess" placeholder="הקלד את המילה באנגלית" class="w-full p-2 border rounded">
-                    <div class="flex space-x-2">
-                        <button class="flex-1 p-2 border rounded" onclick="checkGuess()">בדוק תשובה</button>
-                        <button class="flex-1 p-2 border rounded" onclick="toggleTranslation()">הראה תרגום</button>
-                    </div>
+                <input type="text" id="user-guess" class="input-field" placeholder="הקלד את המילה באנגלית">
+                <div class="score" id="score">ניקוד: 0 / 0</div>
 
-                    <div id="translation" style="display:none;" class="text-center mt-2 p-2 bg-gray-100 rounded">
-                        <p>המילה היא: sandwich</p>
-                    </div>
+                <div class="translation" id="translation">
+                    <p id="translation-text">המילה היא: </p>
+                </div>
 
-                    <div class="mt-4 text-center">
-                        <p id="score">ניקוד: 0 / 0</p>
-                    </div>
+                <div>
+                    <button class="btn" onclick="checkGuess()">בדוק תשובה</button>
+                    <button class="btn btn-secondary" onclick="toggleTranslation()">הראה תרגום</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const API_KEY = '47511993-201ac7b93df24bab71fa5b216'; // Replace with your actual API key
         const wordCategories = [
             {
                 category: 'אוכל ושתייה',
-                words: [
-                    'sandwich', 'chocolate', 'salad', 'drink', 'juice', 
-                    'tea', 'coffee', 'chicken', 'chips', 'pizza', 
-                    'milk', 'fish', 'tomato', 'vegetables', 'meat'
-                ]
+                words: ['sandwich', 'chocolate', 'salad', 'drink', 'juice', 'tea', 'coffee', 'chicken', 'chips', 'pizza']
             },
             {
                 category: 'גוף ורגשות',
-                words: [
-                    'teeth', 'nose', 'mouth', 'happy', 'disappointed', 
-                    'hungry', 'thirsty', 'long', 'short'
-                ]
+                words: ['teeth', 'nose', 'mouth', 'happy', 'disappointed', 'hungry', 'thirsty', 'long', 'short']
             },
             {
                 category: 'זמנים וימים',
-                words: [
-                    'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 
-                    'Friday', 'Saturday', 'seven', 'o\'clock', 'time', 
-                    'dinner', 'birthday', 'eleven', 'thirteen'
-                ]
+                words: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'seven', 'o\'clock', 'time']
             },
             {
                 category: 'שפה ותקשורת',
-                words: [
-                    'you', 'their', 'they', 'what', 'want', 
-                    'with', 'don\'t like', 'can', 'I am', 'girl', 
-                    'Mom', 'share', 'shop'
-                ]
+                words: ['you', 'their', 'they', 'what', 'want', 'with', 'don\'t like', 'can', 'I am', 'girl']
             }
         ];
+
+        let score = 0;
+        let attempts = 0;
+        let currentCategory = null;
+        let currentWord = null;
 
         function startGame() {
             document.getElementById('game-content').style.display = 'block';
@@ -174,12 +162,16 @@
         function selectRandomWord() {
             const randomCategory = wordCategories[Math.floor(Math.random() * wordCategories.length)];
             const randomWord = randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
+            currentCategory = randomCategory;
+            currentWord = randomWord;
+
             document.getElementById('category').innerText = `קטגוריה: ${randomCategory.category}`;
             fetchWordImage(randomWord);
         }
 
         function fetchWordImage(word) {
-            const url = `https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(word)}&image_type=photo&safesearch=true`;
+            const url = `https://pixabay.com/api/?key=47511993-201ac7b93df24bab71fa5b216&q=${encodeURIComponent(word)}&image_type=photo&safesearch=true`;
+
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -188,36 +180,40 @@
                         document.getElementById('word-image').src = randomImage.webformatURL;
                         document.getElementById('word-image').alt = word;
                     } else {
-                        document.getElementById('word-image').src = `/api/placeholder/200/200?text=${word}`;
+                        document.getElementById('word-image').src = `https://via.placeholder.com/150?text=${word}`;
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching image:', error);
-                    document.getElementById('word-image').src = `/api/placeholder/200/200?text=${word}`;
+                    document.getElementById('word-image').src = `https://via.placeholder.com/150?text=${word}`;
                 });
         }
 
         function checkGuess() {
             const userGuess = document.getElementById('user-guess').value.trim().toLowerCase();
-            const currentWord = document.getElementById('word-image').alt;
             if (userGuess === currentWord) {
+                score++;
                 alert('נכון!');
-                // Update score here if needed
             } else {
-                alert('לא נכון. המילה היא ' + currentWord);
+                alert(`לא נכון. המילה היא: ${currentWord}`);
             }
+            attempts++;
+            document.getElementById('score').innerText = `ניקוד: ${score} / ${attempts}`;
             document.getElementById('user-guess').value = '';
             selectRandomWord();
         }
 
         function toggleTranslation() {
             const translation = document.getElementById('translation');
+            const translationText = document.getElementById('translation-text');
             if (translation.style.display === 'none') {
                 translation.style.display = 'block';
+                translationText.innerText = `המילה היא: ${currentWord}`;
             } else {
                 translation.style.display = 'none';
             }
         }
     </script>
+
 </body>
 </html>
