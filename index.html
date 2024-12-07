@@ -1,91 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>English Word Learning Game</title>
+  <title>משחק למידת מילים באנגלית</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
       margin: 0;
       padding: 20px;
-      background-color: #f4f4f9;
-      color: #333;
+      text-align: center;
     }
-    .container {
-      max-width: 500px;
-      margin: 0 auto;
+    .card {
+      max-width: 400px;
+      margin: auto;
       padding: 20px;
-      background: white;
+      background: #fff;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    .title {
-      text-align: center;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    .image-container {
-      text-align: center;
-      margin: 20px 0;
-    }
-    .image-container img {
+    .image-placeholder {
       width: 200px;
       height: 200px;
-      object-fit: cover;
+      display: inline-block;
+      background: #eee;
+      line-height: 200px;
       border-radius: 8px;
-      border: 1px solid #ddd;
+      font-size: 16px;
+      color: #555;
     }
-    .controls {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .controls input {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .controls button {
-      padding: 10px;
+    button {
+      padding: 10px 15px;
       border: none;
-      border-radius: 4px;
+      border-radius: 5px;
       background: #007bff;
       color: white;
+      font-size: 16px;
       cursor: pointer;
+      margin: 5px;
     }
-    .controls button:hover {
-      background: #0056b3;
+    button.secondary {
+      background: #6c757d;
     }
-    .score {
-      text-align: center;
-      margin-top: 20px;
+    input {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="title">משחק למידת מילים באנגלית</div>
-    <div id="game" class="game">
-      <div id="welcome">
-        <p>ברוכים הבאים למשחק למידת מילים באנגלית!</p>
-        <button onclick="startGame()">התחל משחק</button>
+  <div class="card">
+    <h1>משחק למידת מילים באנגלית</h1>
+    <div id="welcomeScreen">
+      <p>ברוכים הבאים למשחק למידת מילים באנגלית!</p>
+      <button onclick="startGame()">התחל משחק</button>
+    </div>
+    <div id="gameScreen" style="display: none;">
+      <p>קטגוריה: <span id="categoryName"></span></p>
+      <div>
+        <img id="wordImage" class="image-placeholder" src="" alt="Word Image">
       </div>
-      <div id="gameArea" style="display: none;">
-        <p>קטגוריה: <span id="categoryName"></span></p>
-        <div class="image-container">
-          <img id="wordImage" src="" alt="Word Image">
-        </div>
-        <div class="controls">
-          <input type="text" id="userGuess" placeholder="הקלד את המילה באנגלית">
-          <button onclick="checkGuess()">בדוק תשובה</button>
-          <button onclick="showTranslation()">הראה תרגום</button>
-        </div>
-        <p id="translation" style="display: none;">המילה היא: <span id="currentWord"></span></p>
-        <div class="score">
-          <p>ניקוד: <span id="score">0</span> / <span id="attempts">0</span></p>
-        </div>
-      </div>
+      <input type="text" id="userGuess" placeholder="הקלד את המילה באנגלית">
+      <button onclick="checkGuess()">בדוק תשובה</button>
+      <button class="secondary" onclick="toggleTranslation()">הראה תרגום</button>
+      <p id="translation" style="display: none;">המילה היא: <span id="currentWord"></span></p>
+      <p>ניקוד: <span id="score">0</span> / <span id="attempts">0</span></p>
     </div>
   </div>
 
@@ -93,45 +76,53 @@
     const wordCategories = [
       {
         category: 'אוכל ושתייה',
-        words: ['sandwich', 'chocolate', 'salad', 'drink', 'juice', 'tea', 'coffee', 'chicken', 'chips', 'pizza']
+        words: ['sandwich', 'chocolate', 'salad', 'drink', 'juice']
       },
       {
         category: 'גוף ורגשות',
-        words: ['teeth', 'nose', 'mouth', 'happy', 'disappointed', 'hungry', 'thirsty']
+        words: ['teeth', 'nose', 'mouth', 'happy', 'hungry']
       },
       {
         category: 'זמנים וימים',
-        words: ['Sunday', 'Monday', 'Tuesday', 'time', 'dinner', 'birthday']
+        words: ['Sunday', 'Monday', 'Tuesday', 'time', 'birthday']
       },
       {
         category: 'שפה ותקשורת',
-        words: ['you', 'their', 'they', 'what', 'can', 'Mom', 'share']
+        words: ['you', 'they', 'what', 'can', 'Mom']
       }
     ];
 
-    let currentCategory = null;
-    let currentWord = null;
-    let score = 0;
-    let attempts = 0;
+    let currentCategory, currentWord, score = 0, attempts = 0;
 
     function startGame() {
-      document.getElementById('welcome').style.display = 'none';
-      document.getElementById('gameArea').style.display = 'block';
+      document.getElementById('welcomeScreen').style.display = 'none';
+      document.getElementById('gameScreen').style.display = 'block';
       selectRandomWord();
     }
 
     function selectRandomWord() {
       const randomCategory = wordCategories[Math.floor(Math.random() * wordCategories.length)];
       const randomWord = randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
-      currentCategory = randomCategory;
+      currentCategory = randomCategory.category;
       currentWord = randomWord;
 
-      document.getElementById('categoryName').innerText = currentCategory.category;
+      document.getElementById('categoryName').innerText = currentCategory;
       document.getElementById('currentWord').innerText = currentWord;
       document.getElementById('translation').style.display = 'none';
 
-      // Fetch a random image (placeholder logic used)
-      document.getElementById('wordImage').src = `https://via.placeholder.com/200?text=${currentWord}`;
+      // Load image (Pixabay API or placeholder for simplicity)
+      const apiKey = '47511993-201ac7b93df24bab71fa5b216';
+      const imageUrl = `https://pixabay.com/api/?key=${apiKey}&q=${currentWord}&image_type=photo&per_page=1`;
+      fetch(imageUrl)
+        .then(response => response.json())
+        .then(data => {
+          const imgElement = document.getElementById('wordImage');
+          if (data.hits && data.hits.length > 0) {
+            imgElement.src = data.hits[0].webformatURL;
+          } else {
+            imgElement.src = `https://via.placeholder.com/200?text=${currentWord}`;
+          }
+        });
     }
 
     function checkGuess() {
@@ -146,8 +137,9 @@
       selectRandomWord();
     }
 
-    function showTranslation() {
-      document.getElementById('translation').style.display = 'block';
+    function toggleTranslation() {
+      const translationElement = document.getElementById('translation');
+      translationElement.style.display = translationElement.style.display === 'none' ? 'block' : 'none';
     }
   </script>
 </body>
