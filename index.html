@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>משחק למידת מילים באנגלית</title>
     <style>
+        /* Your CSS styles here */
         body {
             font-family: Arial, sans-serif;
             background-color: #f7f7f7;
@@ -18,82 +19,6 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             background-color: #fff;
         }
-        .card-header {
-            text-align: center;
-        }
-        .card-content {
-            padding: 20px;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .text-xl {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #333;
-        }
-        .mb-4 {
-            margin-bottom: 1rem;
-        }
-        .mt-4 {
-            margin-top: 1rem;
-        }
-        .mt-2 {
-            margin-top: 0.5rem;
-        }
-        .mb-2 {
-            margin-bottom: 0.5rem;
-        }
-        .flex {
-            display: flex;
-        }
-        .justify-center {
-            justify-content: center;
-        }
-        .items-center {
-            align-items: center;
-        }
-        .space-x-2 {
-            gap: 0.5rem;
-        }
-        .w-32 {
-            width: 8rem;
-        }
-        .h-32 {
-            height: 8rem;
-        }
-        .bg-gray-200 {
-            background-color: #eee;
-        }
-        .animate-pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-        .rounded-lg {
-            border-radius: 0.5rem;
-        }
-        .object-cover {
-            object-fit: cover;
-        }
-        .p-2 {
-            padding: 0.5rem;
-        }
-        .border {
-            border: 1px solid #ccc;
-        }
-        .rounded {
-            border-radius: 0.25rem;
-        }
-        .bg-gray-100 {
-            background-color: #f7f7f7;
-        }
         .button {
             padding: 1rem 2rem;
             font-size: 1.2rem;
@@ -105,18 +30,6 @@
         }
         .button:hover {
             background-color: #3e8e41;
-        }
-        .correct-feedback {
-            color: green;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-top: 1rem;
-        }
-        .incorrect-feedback {
-            color: red;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-top: 1rem;
         }
     </style>
 </head>
@@ -134,6 +47,7 @@
                 </p>
             </div>
             <div id="game-content" style="display:none;">
+                <!-- Game content will be here -->
                 <div class="text-center mb-4">
                     <p id="category">קטגוריה: אוכל ושתייה</p>
                     <h3 class="text-2xl font-bold">נסה לכתוב את המילה הבאה:</h3>
@@ -179,29 +93,7 @@
                     'milk', 'fish', 'tomato', 'vegetables', 'meat'
                 ]
             },
-            {
-                category: 'גוף ורגשות',
-                words: [
-                    'teeth', 'nose', 'mouth', 'happy', 'disappointed', 
-                    'hungry', 'thirsty', 'long', 'short'
-                ]
-            },
-            {
-                category: 'זמנים וימים',
-                words: [
-                    'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 
-                    'Friday', 'Saturday', 'seven', 'o\'clock', 'time', 
-                    'dinner', 'birthday', 'eleven', 'thirteen'
-                ]
-            },
-            {
-                category: 'שפה ותקשורת',
-                words: [
-                    'you', 'their', 'they', 'what', 'want', 
-                    'with', 'don\'t like', 'can', 'I am', 'girl', 
-                    'Mom', 'share', 'shop'
-                ]
-            }
+            // Add more categories here
         ];
 
         let score = 0;
@@ -210,6 +102,7 @@
         let showTranslation = false;
 
         function startGame() {
+            console.log("Game started");
             document.getElementById('game-content').style.display = 'block';
             selectRandomWord();
             resetScore();
@@ -292,3 +185,20 @@
             } else {
                 translation.style.display = 'none';
                 showTranslation = false;
+            }
+        }
+
+        function playCorrectSound() {
+            // Add sound effect for correct answer
+            const audio = new Audio('correct-sound.mp3');
+            audio.play();
+        }
+
+        function playIncorrectSound() {
+            // Add sound effect for incorrect answer
+            const audio = new Audio('incorrect-sound.mp3');
+            audio.play();
+        }
+    </script>
+</body>
+</html>
