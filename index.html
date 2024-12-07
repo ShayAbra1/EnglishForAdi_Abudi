@@ -113,10 +113,15 @@
       document.getElementById('translation').style.display = 'none';
 
       // Fetch an image from Pixabay API
-      const apiKey = '47511993-201ac7b93df24bab71fa5b216';
-      const imageUrl = `https://pixabay.com/api/?key=${apiKey}&q=${currentWord}&image_type=photo&per_page=1&lang=en`;
+      const apiKey = '47511993-201ac7b93df24bab71fa5b216'; // ודא שהמפתח תקין
+      const imageUrl = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(currentWord)}&image_type=photo&per_page=1&lang=en`;
       fetch(imageUrl)
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.statusText}`);
+          }
+          return response.json();
+        })
         .then(data => {
           const imgElement = document.getElementById('wordImage');
           if (data.hits && data.hits.length > 0) {
@@ -126,6 +131,12 @@
             imgElement.src = 'https://via.placeholder.com/200?text=No+Image';
             imgElement.alt = 'No image available';
           }
+        })
+        .catch(error => {
+          console.error('Error fetching image:', error);
+          const imgElement = document.getElementById('wordImage');
+          imgElement.src = 'https://via.placeholder.com/200?text=Error';
+          imgElement.alt = 'Error loading image';
         });
     }
 
