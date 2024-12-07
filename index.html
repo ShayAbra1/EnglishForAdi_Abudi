@@ -115,20 +115,15 @@
                     <input type="text" id="user-guess" placeholder="הקלד את המילה באנגלית" class="w-full p-2 border rounded">
                     <div class="flex space-x-2">
                         <button class="flex-1 p-2 border rounded" onclick="checkGuess()">בדוק תשובה</button>
-                        <button 
-                            class="flex-1 p-2 border rounded" 
-                            onclick="toggleTranslation()"
-                        >
-                            {showTranslation ? 'הסתר תרגום' : 'הראה תרגום'}
-                        </button>
+                        <button class="flex-1 p-2 border rounded" onclick="toggleTranslation()">הראה תרגום</button>
                     </div>
 
                     <div id="translation" style="display:none;" class="text-center mt-2 p-2 bg-gray-100 rounded">
-                        <p>המילה היא: <span id="current-word"></span></p>
+                        <p>המילה היא: sandwich</p>
                     </div>
 
                     <div class="mt-4 text-center">
-                        <p id="score">ניקוד: <span id="score-value">0</span> / <span id="attempts-value">0</span></p>
+                        <p id="score">ניקוד: 0 / 0</p>
                     </div>
                 </div>
             </div>
@@ -136,7 +131,7 @@
     </div>
 
     <script>
-        const API_KEY = 'YOUR_API_KEY'; // Replace with your actual API key
+        const API_KEY = '47511993-201ac7b93df24bab71fa5b216'; // Replace with your actual API key
         const wordCategories = [
             {
                 category: 'אוכל ושתייה',
@@ -171,11 +166,6 @@
             }
         ];
 
-        let score = 0;
-        let attempts = 0;
-        let currentWord = '';
-        let showTranslation = false;
-
         function startGame() {
             document.getElementById('game-content').style.display = 'block';
             selectRandomWord();
@@ -183,10 +173,9 @@
 
         function selectRandomWord() {
             const randomCategory = wordCategories[Math.floor(Math.random() * wordCategories.length)];
-            currentWord = randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
+            const randomWord = randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
             document.getElementById('category').innerText = `קטגוריה: ${randomCategory.category}`;
-            document.getElementById('current-word').innerText = currentWord;
-            fetchWordImage(currentWord);
+            fetchWordImage(randomWord);
         }
 
         function fetchWordImage(word) {
@@ -210,17 +199,13 @@
 
         function checkGuess() {
             const userGuess = document.getElementById('user-guess').value.trim().toLowerCase();
-            attempts++;
-            document.getElementById('attempts-value').innerText = attempts;
-
+            const currentWord = document.getElementById('word-image').alt;
             if (userGuess === currentWord) {
-                score++;
-                document.getElementById('score-value').innerText = score;
                 alert('נכון!');
+                // Update score here if needed
             } else {
-                alert(`לא נכון. המילה היא ${currentWord}`);
+                alert('לא נכון. המילה היא ' + currentWord);
             }
-
             document.getElementById('user-guess').value = '';
             selectRandomWord();
         }
@@ -229,10 +214,8 @@
             const translation = document.getElementById('translation');
             if (translation.style.display === 'none') {
                 translation.style.display = 'block';
-                showTranslation = true;
             } else {
                 translation.style.display = 'none';
-                showTranslation = false;
             }
         }
     </script>
