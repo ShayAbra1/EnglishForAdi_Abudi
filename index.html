@@ -93,53 +93,19 @@
     const wordCategories = [
       {
         category: 'אוכל ושתייה',
-        words: [
-          { word: 'sandwich', image: 'https://via.placeholder.com/200?text=sandwich' },
-          { word: 'chocolate', image: 'https://via.placeholder.com/200?text=chocolate' },
-          { word: 'salad', image: 'https://via.placeholder.com/200?text=salad' },
-          { word: 'drink', image: 'https://via.placeholder.com/200?text=drink' },
-          { word: 'juice', image: 'https://via.placeholder.com/200?text=juice' },
-          { word: 'tea', image: 'https://via.placeholder.com/200?text=tea' },
-          { word: 'coffee', image: 'https://via.placeholder.com/200?text=coffee' },
-          { word: 'chicken', image: 'https://via.placeholder.com/200?text=chicken' },
-          { word: 'chips', image: 'https://via.placeholder.com/200?text=chips' },
-          { word: 'pizza', image: 'https://via.placeholder.com/200?text=pizza' }
-        ]
+        words: ['sandwich', 'chocolate', 'salad', 'drink', 'juice', 'tea', 'coffee', 'chicken', 'chips', 'pizza']
       },
       {
         category: 'גוף ורגשות',
-        words: [
-          { word: 'teeth', image: 'https://via.placeholder.com/200?text=teeth' },
-          { word: 'nose', image: 'https://via.placeholder.com/200?text=nose' },
-          { word: 'mouth', image: 'https://via.placeholder.com/200?text=mouth' },
-          { word: 'happy', image: '/mnt/data/A_bright_and_cheerful_illustration_of_a_smiling_fa.png' }, // Custom image for "happy"
-          { word: 'disappointed', image: 'https://via.placeholder.com/200?text=disappointed' },
-          { word: 'hungry', image: 'https://via.placeholder.com/200?text=hungry' },
-          { word: 'thirsty', image: 'https://via.placeholder.com/200?text=thirsty' }
-        ]
+        words: ['teeth', 'nose', 'mouth', 'happy', 'disappointed', 'hungry', 'thirsty']
       },
       {
         category: 'זמנים וימים',
-        words: [
-          { word: 'Sunday', image: 'https://via.placeholder.com/200?text=Sunday' },
-          { word: 'Monday', image: 'https://via.placeholder.com/200?text=Monday' },
-          { word: 'Tuesday', image: 'https://via.placeholder.com/200?text=Tuesday' },
-          { word: 'time', image: 'https://via.placeholder.com/200?text=time' },
-          { word: 'dinner', image: 'https://via.placeholder.com/200?text=dinner' },
-          { word: 'birthday', image: 'https://via.placeholder.com/200?text=birthday' }
-        ]
+        words: ['Sunday', 'Monday', 'Tuesday', 'time', 'dinner', 'birthday']
       },
       {
         category: 'שפה ותקשורת',
-        words: [
-          { word: 'you', image: 'https://via.placeholder.com/200?text=you' },
-          { word: 'their', image: 'https://via.placeholder.com/200?text=their' },
-          { word: 'they', image: 'https://via.placeholder.com/200?text=they' },
-          { word: 'what', image: 'https://via.placeholder.com/200?text=what' },
-          { word: 'can', image: 'https://via.placeholder.com/200?text=can' },
-          { word: 'Mom', image: 'https://via.placeholder.com/200?text=Mom' },
-          { word: 'share', image: 'https://via.placeholder.com/200?text=share' }
-        ]
+        words: ['you', 'their', 'they', 'what', 'can', 'Mom', 'share']
       }
     ];
 
@@ -156,16 +122,16 @@
 
     function selectRandomWord() {
       const randomCategory = wordCategories[Math.floor(Math.random() * wordCategories.length)];
-      const randomWordObject = randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
+      const randomWord = randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
       currentCategory = randomCategory;
-      currentWord = randomWordObject.word;
+      currentWord = randomWord;
 
       document.getElementById('categoryName').innerText = currentCategory.category;
       document.getElementById('currentWord').innerText = currentWord;
       document.getElementById('translation').style.display = 'none';
 
-      // Set the image based on the word
-      document.getElementById('wordImage').src = randomWordObject.image;
+      // Fetch a random image (placeholder logic used)
+      document.getElementById('wordImage').src = `https://via.placeholder.com/200?text=${currentWord}`;
     }
 
     function checkGuess() {
