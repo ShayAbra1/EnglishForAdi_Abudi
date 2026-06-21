@@ -1,219 +1,219 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>משחק למידת מילים באנגלית</title>
-    <style>
-        body {
-            background-color: #f4f8fc;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            color: #333;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>תמלול קולי</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #171a21;
+    --ink: #eef1f6;
+    --muted: #8b93a3;
+    --line: #262b35;
+    --accent: #ff5a4d;
+    --accent-soft: rgba(255, 90, 77, 0.15);
+    --ok: #4ad6a0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", "Helvetica Neue", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .app {
+    width: 100%;
+    max-width: 560px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  header {
+    padding: 22px 24px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.2px; }
+  .status {
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--muted);
+    transition: background 0.2s;
+  }
+  .status.live .dot { background: var(--accent); animation: pulse 1.2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-        .card {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 30px;
-            border-radius: 12px;
-            background-color: #fff;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
+  #chatBox {
+    padding: 24px;
+    min-height: 220px;
+    max-height: 50vh;
+    overflow-y: auto;
+    font-size: 17px;
+    line-height: 1.7;
+  }
+  #chatBox .placeholder { color: var(--muted); }
+  #chatBox .interim { color: var(--muted); }
+  #chatBox .error {
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 15px;
+  }
 
-        .card-header h2 {
-            font-size: 2rem;
-            text-align: center;
-            color: #4CAF50;
-            margin-bottom: 20px;
-        }
-
-        .card-content {
-            text-align: center;
-        }
-
-        .btn {
-            padding: 15px;
-            font-size: 1.2rem;
-            background-color: #FF7F50;
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 60%;
-            margin: 10px auto;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:hover {
-            background-color: #ff6347;
-        }
-
-        .btn-secondary {
-            background-color: #87CEEB;
-        }
-
-        .btn-secondary:hover {
-            background-color: #4682b4;
-        }
-
-        .img-container {
-            margin-top: 20px;
-        }
-
-        .img-container img {
-            width: 150px;
-            height: 150px;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 3px solid #FF7F50;
-        }
-
-        .input-field {
-            width: 70%;
-            padding: 12px;
-            margin-top: 15px;
-            font-size: 1.2rem;
-            border-radius: 10px;
-            border: 2px solid #ddd;
-            text-align: center;
-        }
-
-        .translation {
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #FFFACD;
-            border-radius: 10px;
-            font-size: 1.2rem;
-            display: none;
-        }
-
-        .score {
-            margin-top: 20px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #4CAF50;
-        }
-    </style>
+  footer {
+    padding: 20px 24px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  #startBtn {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: inherit;
+    color: var(--ink);
+    background: #20242d;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  #startBtn:hover { background: #262b35; }
+  #startBtn.recording {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .hint { font-size: 12px; color: var(--muted); text-align: center; }
+  .hint code { background: #20242d; padding: 1px 6px; border-radius: 5px; }
+</style>
 </head>
 <body>
+  <main class="app">
+    <header>
+      <h1>תמלול קולי</h1>
+      <div class="status" id="status"><span class="dot"></span><span id="statusText">מוכן</span></div>
+    </header>
+    <div id="chatBox"><span class="placeholder">לחצו על הכפתור והתחילו לדבר.</span></div>
+    <footer>
+      <button id="startBtn">🎤 התחל הקלטה</button>
+      <p class="hint">דורש <code>Chrome</code> או <code>Edge</code>, והרצה דרך <code>localhost</code> או <code>HTTPS</code> (לא <code>file://</code>).</p>
+    </footer>
+  </main>
 
-    <div class="card">
-        <div class="card-header">
-            <h2>משחק למידת מילים באנגלית</h2>
-        </div>
-        <div class="card-content">
-            <h3>ברוכים הבאים למשחק למידת מילים באנגלית!</h3>
-            <p>המשחק הזה ילמד אותך מילים באנגלית בצורה מהנה ומאתגרת!</p>
-            <button class="btn" onclick="startGame()">התחל משחק</button>
+<script>
+  const startBtn   = document.getElementById('startBtn');
+  const chatBox    = document.getElementById('chatBox');
+  const statusEl   = document.getElementById('status');
+  const statusText = document.getElementById('statusText');
 
-            <div id="game-content" style="display:none;">
-                <p id="category" class="text-xl"></p>
-                <h3 class="text-2xl font-bold">נסה לנחש את המילה!</h3>
+  let isRecording = false;
+  let finalText = '';
 
-                <div class="img-container">
-                    <img id="word-image" src="" alt="תמונה" />
-                </div>
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-                <input type="text" id="user-guess" class="input-field" placeholder="הקלד את המילה באנגלית">
-                <div class="score" id="score">ניקוד: 0 / 0</div>
+  function setStatus(text, live) {
+    statusText.textContent = text;
+    statusEl.classList.toggle('live', !!live);
+  }
 
-                <div class="translation" id="translation">
-                    <p id="translation-text">המילה היא: </p>
-                </div>
+  function showError(msg) {
+    const el = document.createElement('div');
+    el.className = 'error';
+    el.textContent = '⚠️ ' + msg;
+    chatBox.appendChild(el);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
 
-                <div>
-                    <button class="btn" onclick="checkGuess()">בדוק תשובה</button>
-                    <button class="btn btn-secondary" onclick="toggleTranslation()">הראה תרגום</button>
-                </div>
-            </div>
-        </div>
-    </div>
+  if (!SpeechRecognition) {
+    chatBox.innerHTML = '';
+    showError('הדפדפן אינו תומך בזיהוי דיבור. השתמשו ב-Chrome או Edge.');
+    startBtn.disabled = true;
+  } else {
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'he-IL';
+    recognition.continuous = true;
+    recognition.interimResults = true;
 
-    <script>
-        const wordCategories = [
-            {
-                category: 'אוכל ושתייה',
-                words: ['sandwich', 'chocolate', 'salad', 'drink', 'juice', 'tea', 'coffee', 'chicken', 'chips', 'pizza']
-            },
-            {
-                category: 'גוף ורגשות',
-                words: ['teeth', 'nose', 'mouth', 'happy', 'disappointed', 'hungry', 'thirsty', 'long', 'short']
-            },
-            {
-                category: 'זמנים וימים',
-                words: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'seven', 'o\'clock', 'time']
-            },
-            {
-                category: 'שפה ותקשורת',
-                words: ['you', 'their', 'they', 'what', 'want', 'with', 'don\'t like', 'can', 'I am', 'girl']
-            }
-        ];
+    recognition.onstart = () => {
+      isRecording = true;
+      startBtn.textContent = '⏹ עצור הקלטה';
+      startBtn.classList.add('recording');
+      setStatus('מקשיב…', true);
+      chatBox.innerHTML = '<span class="placeholder">מקשיב... תתחילו לדבר</span>';
+      finalText = '';
+    };
 
-        let score = 0;
-        let attempts = 0;
-        let currentCategory = null;
-        let currentWord = null;
-
-        function startGame() {
-            document.getElementById('game-content').style.display = 'block';
-            selectRandomWord();
+    recognition.onresult = (event) => {
+      let interim = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalText += transcript + ' ';
+        } else {
+          interim += transcript;
         }
+      }
+      chatBox.innerHTML =
+        '<span class="final">' + finalText + '</span>' +
+        '<span class="interim">' + interim + '</span>';
+      chatBox.scrollTop = chatBox.scrollHeight;
+    };
 
-        function selectRandomWord() {
-            const randomCategory = wordCategories[Math.floor(Math.random() * wordCategories.length)];
-            const randomWord = randomCategory.words[Math.floor(Math.random() * randomCategory.words.length)];
-            currentCategory = randomCategory;
-            currentWord = randomWord;
+    // טיפול מפורט בשגיאות — מציג את סיבת הכשל
+    recognition.onerror = (event) => {
+      const reasons = {
+        'no-speech':      'לא זוהה דיבור. נסו שוב.',
+        'audio-capture':  'לא נמצא מיקרופון זמין.',
+        'not-allowed':    'הגישה למיקרופון נדחתה. אשרו את ההרשאה בדפדפן.',
+        'service-not-allowed': 'שירות הזיהוי חסום. ודאו הרצה דרך HTTPS או localhost.',
+        'network':        'תקלת רשת בזמן הזיהוי.',
+        'aborted':        'ההקלטה הופסקה.'
+      };
+      showError((reasons[event.error] || 'אירעה שגיאה') + ' (' + event.error + ')');
+    };
 
-            document.getElementById('category').innerText = `קטגוריה: ${randomCategory.category}`;
-            fetchWordImage(randomWord);
+    // תיקון onend לפי ההמלצה — בלי add/remove מיותר של המחלקה recording
+    recognition.onend = () => {
+      isRecording = false;
+      startBtn.textContent = '🎤 התחל הקלטה';
+      startBtn.classList.remove('recording');
+      setStatus('מוכן', false);
+
+      if (chatBox.innerText.trim() === 'מקשיב... תתחילו לדבר') {
+        chatBox.innerHTML = '<span class="placeholder">לא נקלט שמע. נסו שוב.</span>';
+      }
+    };
+
+    startBtn.addEventListener('click', () => {
+      if (isRecording) {
+        recognition.stop();
+      } else {
+        try {
+          recognition.start();
+        } catch (e) {
+          showError('לא ניתן להתחיל הקלטה: ' + e.message);
         }
-
-        function fetchWordImage(word) {
-            const url = `https://pixabay.com/api/?key=47511993-201ac7b93df24bab71fa5b216&q=${encodeURIComponent(word)}&image_type=photo&safesearch=true`;
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.hits && data.hits.length > 0) {
-                        const randomImage = data.hits[Math.floor(Math.random() * data.hits.length)];
-                        document.getElementById('word-image').src = randomImage.webformatURL;
-                        document.getElementById('word-image').alt = word;
-                    } else {
-                        document.getElementById('word-image').src = `https://via.placeholder.com/150?text=${word}`;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching image:', error);
-                    document.getElementById('word-image').src = `https://via.placeholder.com/150?text=${word}`;
-                });
-        }
-
-        function checkGuess() {
-            const userGuess = document.getElementById('user-guess').value.trim().toLowerCase();
-            if (userGuess === currentWord) {
-                score++;
-                alert('נכון!');
-            } else {
-                alert(`לא נכון. המילה היא: ${currentWord}`);
-            }
-            attempts++;
-            document.getElementById('score').innerText = `ניקוד: ${score} / ${attempts}`;
-            document.getElementById('user-guess').value = '';
-            selectRandomWord();
-        }
-
-        function toggleTranslation() {
-            const translation = document.getElementById('translation');
-            const translationText = document.getElementById('translation-text');
-            if (translation.style.display === 'none') {
-                translation.style.display = 'block';
-                translationText.innerText = `המילה היא: ${currentWord}`;
-            } else {
-                translation.style.display = 'none';
-            }
-        }
-    </script>
-
+      }
+    });
+  }
+</script>
 </body>
 </html>
